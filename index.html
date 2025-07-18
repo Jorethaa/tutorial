@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scent by Smiz</title>
+    <style>
+      /* Reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Helvetica Neue", sans-serif;
+        color: #222;
+        background: #d36aa1;
+        scroll-behavior: smooth;
+      }
+      header {
+        background: rgba(255, 255, 255, 0.9);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+      }
+      header .logo {
+        font-weight: bold;
+        color: #8e44ad;
+        font-size: 1.4rem;
+      }
+      header nav ul {
+        list-style: none;
+        display: flex;
+        gap: 1.2rem;
+      }
+      header nav ul li a {
+        text-decoration: none;
+        color: #333;
+        font-weight: 600;
+        transition: color 0.3s;
+      }
+      header nav ul li a:hover {
+        color: #8e44ad;
+      }
+      .cart-icon {
+        cursor: pointer;
+        position: relative;
+        font-size: 1.2rem;
+      }
+      .cart-count {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: #8e44ad;
+        color: #fff;
+        border-radius: 50%;
+        font-size: 0.7rem;
+        padding: 2px 6px;
+      }
+
+      /* hero video */
+      #hero {
+        position: relative;
+        height: 80vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #hero video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+      }
+      .hero-content {
+        color: #fff;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 2rem;
+        border-radius: 10px;
+      }
+      .hero-content h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+      .hero-content button {
+        background: #8e44ad;
+        color: #fff;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      .hero-content button:hover {
+        background: #732d91;
+      }
+
+      /* fragrances section */
+      #fragrances {
+        padding: 3rem 2rem;
+        background: #fff;
+      }
+      #fragrances h2 {
+        text-align: center;
+        margin-bottom: 1rem;
+        font-size: 2rem;
+        color: #8e44ad;
+      }
+      #searchInput {
+        display: block;
+        margin: 0 auto 2rem auto;
+        padding: 0.6rem;
+        width: 80%;
+        max-width: 400px;
+        border: 2px solid #8e44ad;
+        border-radius: 5px;
+      }
+      .fragrance-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 2rem;
+      }
+      .card {
+        background: #fff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+      }
+      .card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+      }
+      .card-content {
+        padding: 1rem;
+        text-align: center;
+      }
+      .card-content h3 {
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+        color: #333;
+      }
+      .card-content button {
+        background: #8e44ad;
+        border: none;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .card-content button:hover {
+        background: #732d91;
+      }
+
+      /* cart panel */
+      #cartPanel {
+        position: fixed;
+        top: 0;
+        right: -300px;
+        width: 300px;
+        height: 100%;
+        background: #fff;
+        box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
+        transition: right 0.3s;
+        padding: 1rem;
+        z-index: 2000;
+      }
+      #cartPanel.show {
+        right: 0;
+      }
+      #cartPanel h3 {
+        margin-bottom: 1rem;
+      }
+      #cartItems {
+        list-style: none;
+        margin-bottom: 1rem;
+      }
+      #cartItems li {
+        border-bottom: 1px solid #eee;
+        padding: 0.5rem 0;
+        display: flex;
+        justify-content: space-between;
+      }
+      #checkoutBtn {
+        width: 100%;
+        background: #8e44ad;
+        color: #fff;
+        border: none;
+        padding: 0.8rem;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      #checkoutBtn:hover {
+        background: #732d91;
+      }
+
+      /* checkout page */
+      #checkoutPage {
+        display: none;
+        padding: 3rem 2rem;
+        background: #fdfdfd;
+      }
+      #checkoutPage h2 {
+        text-align: center;
+        color: #8e44ad;
+        margin-bottom: 1rem;
+      }
+      #checkoutPage form {
+        max-width: 400px;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      #checkoutPage form input {
+        padding: 0.8rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      #checkoutPage form button {
+        background: #8e44ad;
+        border: none;
+        color: white;
+        padding: 0.8rem;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      #checkoutPage form button:hover {
+        background: #732d91;
+      }
+
+      /* about & contact */
+      #about,
+      #contact {
+        padding: 3rem 2rem;
+        text-align: center;
+      }
+      #about {
+        background: linear-gradient(45deg, #e0c3fc, #d36aa1);
+        color: #333;
+      }
+      #contact form {
+        max-width: 400px;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      #contact form input,
+      #contact form textarea {
+        padding: 0.8rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      #contact form button {
+        background: #8e44ad;
+        color: white;
+        border: none;
+        padding: 0.8rem;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      #contact form button:hover {
+        background: #732d91;
+      }
+
+      footer {
+        text-align: center;
+        background: #8e44ad;
+        color: white;
+        padding: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">Scent by Smiz</div>
+      <nav>
+        <ul>
+          <li><a href="#hero">Home</a></li>
+          <li><a href="#fragrances">Fragrances</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="cart-icon" onclick="toggleCart()">
+        🛒 <span class="cart-count" id="cartCount">0</span>
+      </div>
+    </header>
+
+    <section id="hero">
+      <video autoplay muted loop>
+        <source
+          src="https://cdn.coverr.co/videos/coverr-spilled-perfume-8816/1080p.mp4"
+          type="video/mp4"
+        />
+      </video>
+      <div class="hero-content">
+        <h1>Indulge Your Senses</h1>
+        <button onclick="scrollToFragrances()">Shop Now</button>
+      </div>
+    </section>
+
+    <section id="fragrances">
+      <h2>Our Fragrance Collection</h2>
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search your scent..."
+        onkeyup="filterFragrances()"
+      />
+      <div class="fragrance-grid" id="fragranceGrid">
+        <div class="card">
+          <img
+            src="https://images.unsplash.com/photo-1613078845144-41ad4931a3d6"
+            alt="Rose Romance"
+          />
+          <div class="card-content">
+            <h3>Rose Romance</h3>
+            <button onclick="addToCart('Rose Romance')">Add to Cart</button>
+          </div>
+        </div>
+        <div class="card">
+          <img
+            src="https://images.unsplash.com/photo-1517586979033-b1d721429b7e"
+            alt="Citrus Zest"
+          />
+          <div class="card-content">
+            <h3>Citrus Zest</h3>
+            <button onclick="addToCart('Citrus Zest')">Add to Cart</button>
+          </div>
+        </div>
+        <div class="card">
+          <img
+            src="https://images.unsplash.com/photo-1600508777032-77dfe3be9cb6"
+            alt="Ocean Wave"
+          />
+          <div class="card-content">
+            <h3>Ocean Wave</h3>
+            <button onclick="addToCart('Ocean Wave')">Add to Cart</button>
+          </div>
+        </div>
+        <div class="card">
+          <img
+            src="https://images.unsplash.com/photo-1579583769135-6471f4b8b7b4"
+            alt="Lavender Bliss"
+          />
+          <div class="card-content">
+            <h3>Lavender Bliss</h3>
+            <button onclick="addToCart('Lavender Bliss')">Add to Cart</button>
+          </div>
+        </div>
+        <div class="card">
+          <img
+            src="https://images.unsplash.com/photo-1602526216854-c6d3e6dc20b3"
+            alt="Vanilla Dream"
+          />
+          <div class="card-content">
+            <h3>Vanilla Dream</h3>
+            <button onclick="addToCart('Vanilla Dream')">Add to Cart</button>
+          </div>
+        </div>
+        <div class="card">
+          <img
+            src="https://images.unsplash.com/photo-1620660504239-ea12d47aa05a"
+            alt="Amber Night"
+          />
+          <div class="card-content">
+            <h3>Amber Night</h3>
+            <button onclick="addToCart('Amber Night')">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <h2>About Scent by Smiz</h2>
+      <p>
+        We curate refined fragrances inspired by nature and crafted with
+        passion. Immerse yourself in an olfactory journey unlike any other.
+      </p>
+    </section>
+
+    <section id="contact">
+      <h2>Contact Us</h2>
+      <form>
+        <input type="text" placeholder="Your Name" required />
+        <input type="email" placeholder="Your Email" required />
+        <textarea placeholder="Your Message"></textarea>
+        <button type="submit">Send</button>
+      </form>
+    </section>
+
+    <section id="checkoutPage">
+      <h2>Checkout</h2>
+      <form onsubmit="return submitOrder()">
+        <input type="text" placeholder="Full Name" required />
+        <input type="email" placeholder="Email" required />
+        <input type="text" placeholder="Address" required />
+        <button type="submit">Place Order</button>
+      </form>
+    </section>
+
+    <footer>
+      <p>&copy; 2025 Scent by Smiz. All rights reserved.</p>
+    </footer>
+
+    <div id="cartPanel">
+      <h3>Your Cart</h3>
+      <ul id="cartItems"></ul>
+      <button id="checkoutBtn" onclick="goToCheckout()">
+        Proceed to Checkout
+      </button>
+    </div>
+
+    <script>
+      const cartItems = [];
+      function scrollToFragrances() {
+        document
+          .getElementById("fragrances")
+          .scrollIntoView({ behavior: "smooth" });
+      }
+      function filterFragrances() {
+        const input = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        document.querySelectorAll(".card").forEach((card) => {
+          const title = card.querySelector("h3").textContent.toLowerCase();
+          card.style.display = title.includes(input) ? "block" : "none";
+        });
+      }
+      function toggleCart() {
+        document.getElementById("cartPanel").classList.toggle("show");
+        renderCart();
+      }
+      function addToCart(item) {
+        cartItems.push(item);
+        document.getElementById("cartCount").textContent = cartItems.length;
+        renderCart();
+      }
+      function renderCart() {
+        const list = document.getElementById("cartItems");
+        list.innerHTML = "";
+        cartItems.forEach((item, idx) => {
+          list.innerHTML += (
+            <li>
+              ${item} <button onclick="removeFromCart(${idx})">✖</button>
+            </li>
+          );
+        });
+      }
+      function removeFromCart(index) {
+        cartItems.splice(index, 1);
+        document.getElementById("cartCount").textContent = cartItems.length;
+        renderCart();
+      }
+      function goToCheckout() {
+        document.getElementById("checkoutPage").style.display = "block";
+        document.getElementById("cartPanel").classList.remove("show");
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: "smooth",
+        });
+      }
+      function submitOrder() {
+        alert("Thank you for your order!");
+        cartItems.length = 0;
+        document.getElementById("cartCount").textContent = 0;
+        document.getElementById("checkoutPage").style.display = "none";
+        return false;
+      }
+    </script>
+  </body>
+</html>
