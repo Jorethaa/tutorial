@@ -85,4 +85,12 @@
       <button type="submit">Submit</button>
     </form>
   </body>
+  <script>
+    document
+      .getElementById("celebrityForm")
+      .addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent actual form submission
+        alert("Submitted!");
+      });
+  </script>
 </html>
