@@ -47,7 +47,7 @@
       event.
     </h3>
 
-    <form>
+    <form id="celebrityForm">
       <label>Name</label>
       <input type="text" placeholder="First Name" required />
       <input type="text" placeholder="Last Name" required />
@@ -86,11 +86,12 @@
     </form>
   </body>
   <script>
-    document
-      .getElementById("celebrityForm")
-      .addEventListener("submit", function (event) {
-        event.preventDefault(); // Prevent actual form submission
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.getElementById("celebrityForm");
+      form.addEventListener("submit", function (event) {
+        event.preventDefault(); // Stop form from actually submitting
         alert("Submitted!");
       });
+    });
   </script>
 </html>
